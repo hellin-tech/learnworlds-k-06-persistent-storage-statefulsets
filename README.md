@@ -1,5 +1,22 @@
 # K-06: Persistent Storage & StatefulSets
 
+## Voraussetzungen
+
+- GitHub-Konto
+- Zugriff auf GitHub Codespaces
+- Grundlegende Kenntnisse im Umgang mit dem Terminal
+
+Docker, kubectl, minikube und Helm werden automatisch
+in der Cloud-Entwicklungsumgebung bereitgestellt.
+Eine lokale Installation ist nicht notwendig.
+
+### Entwicklungsumgebung starten
+
+1. Öffne das Repository auf GitHub
+2. Klicke auf **Code** → **Codespaces** → **Create codespace on main**
+3. Die Entwicklungsumgebung wird automatisch vorbereitet. Der erste Start und das Einrichten des Kubernetes-Clusters können einige Minuten dauern.
+
+
 ## NovaTech-Szenario
 Tom hat den PostgreSQL-Pod im Dev-Cluster neu gestartet – alle Testdaten sind weg. Container-Filesysteme sind flüchtig. Nina erinnert sich: "In Docker Compose hatten wir ein Volume!" Kubernetes hat ein ähnliches, aber komplexeres Konzept: PersistentVolumes, PersistentVolumeClaims und StatefulSets.
 
