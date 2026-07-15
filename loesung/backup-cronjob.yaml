@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: novatech-dev
+spec:
+  schedule: "0 2 * * *"  # Täglich um 02:00 UTC
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: postgres:16-alpine
+            command:
+            - /bin/sh
+            - -c
+            - |
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              pg_dump -h postgres-headless -U postgres -d novatech \
+                > /backup/novatech_${TIMESTAMP}.sql
+              echo "Backup erstellt: novatech_${TIMESTAMP}.sql"
+              # Alte Backups löschen (älter als 7 Tage)
+              find /backup -name "*.sql" -mtime +7 -delete
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: api-secrets
+                  key: DATABASE_PASSWORD
+            volumeMounts:
+            - name: backup-volume
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-volume
+            persistentVolumeClaim:
+              claimName: backup-storage

@@ -1,0 +1,39 @@
+# TODO: PostgreSQL-Deployment MIT PVC
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: novatech-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: "novatech"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: DATABASE_PASSWORD
+        # TODO: volumeMounts hinzufügen
+        #   mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "1000m"
+            memory: "512Mi"
+      # TODO: volumes hinzufügen (PVC referenzieren)

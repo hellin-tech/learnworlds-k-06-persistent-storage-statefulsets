@@ -1,0 +1,45 @@
+# TODO: Erstelle ein StatefulSet für PostgreSQL
+# Vorteile gegenüber Deployment:
+# - Stabile Pod-Namen (postgres-0, postgres-1, ...)
+# - Dedizierter PVC pro Pod (volumeClaimTemplates)
+# - Geordnetes Starten/Stoppen
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: novatech-dev
+spec:
+  serviceName: postgres-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          value: "dev-password"
+        # TODO: volumeMounts
+  # TODO: volumeClaimTemplates
+---
+# TODO: Headless Service (clusterIP: None)
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless
+  namespace: novatech-dev
+spec:
+  clusterIP: None
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
